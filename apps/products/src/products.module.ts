@@ -4,6 +4,9 @@ import { ProductsService } from './products.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { ConfigModule } from '@nestjs/config';
+import { ClientsModule } from '@nestjs/microservices';
+import { Transport } from '@nestjs/microservices';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -12,14 +15,25 @@ import { ConfigModule } from '@nestjs/config';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: process.env.PRODUCT_DATABASE_URL,
+      url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
       ssl: {
         rejectUnauthorized: false,
       },
     }),
-    TypeOrmModule.forFeature([Product])
+    TypeOrmModule.forFeature([Product]),
+    ClientsModule.register([
+      {
+        name: 'AUTH_SERVICE',
+        transport: Transport.GRPC,
+        options: {
+          package: 'auth',
+          protoPath: join(__dirname, '../../../proto/auth.proto'),
+          url: `localhost:${process.env.PORT}`,
+        },
+      },
+    ]),
   ],
   controllers: [ProductsController],
   providers: [ProductsService],
