@@ -1,2 +1,2 @@
-export * from './types';
-export * from './constants';
+export * from './common.module';
+export * from './common.service';
