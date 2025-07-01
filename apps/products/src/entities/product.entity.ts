@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { IsNotEmpty, IsNumber, IsPositive, IsString, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsPositive, IsString, IsUrl, IsBoolean, IsOptional } from 'class-validator';
 
 @Entity()
 export class Product {
@@ -36,6 +36,27 @@ export class Product {
     @Column()
     @IsString()
     shgId: string;
+
+    @Column({ nullable: true })
+    @IsString()
+    @IsOptional()
+    voId: string;
+
+    @Column({ nullable: true })
+    @IsString()
+    @IsOptional()
+    clfId: string;
+
+    @Column({ default: false })
+    @IsBoolean()
+    isVerified: boolean;
+
+    @Column({ nullable: true })
+    @IsString()
+    verifiedBy: string;
+
+    @Column({ nullable: true })
+    verificationDate: Date;
 
     @CreateDateColumn()
     createdAt: Date;
