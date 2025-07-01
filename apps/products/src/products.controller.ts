@@ -11,7 +11,7 @@ import {
   DeleteProductResponse,
   ProductServiceController,
   ProductServiceControllerMethods,
-} from '../../../libs/common/src/types/product';
+} from '@app/common';
 
 @Controller()
 @ProductServiceControllerMethods()
