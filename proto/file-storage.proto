@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package fileStorage;
+
+service FileStorageService {
+  rpc UploadFile (UploadFileRequest) returns (UploadFileResponse);
+}
+
+message UploadFileRequest {
+  string fileName = 1;
+  string base64 = 2;
+  string mimeType = 3;
+  string token = 4; // JWT token for authentication
+}
+
+message UploadFileResponse {
+  string fileUrl = 1;
+}
