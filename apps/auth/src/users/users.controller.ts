@@ -6,12 +6,18 @@ import { GrpcMethod } from '@nestjs/microservices';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // @GrpcMethod('AuthService', 'Login')
-  // async login(data: { phoneNumber: string; password: string }) {
-  //   return this.usersService.login(data.phoneNumber, data.password);
-  //   }
-  //   @GrpcMethod('AuthService', 'AddMember')
-  // async addMember(data: { presidentId: string; name: string; phoneNumber: string; role: string }) {
-  //   return this.usersService.addMember(data.presidentId, data.name, data.phoneNumber, data.role);
-  // }
+  @GrpcMethod('AuthService', 'Login')
+  login(data: any) {
+    return this.usersService.login(data);
+  }
+
+  @GrpcMethod('AuthService', 'AddMember')
+  addMember(data: any) {
+    return this.usersService.addMember(data);
+  }
+
+  @GrpcMethod('AuthService', 'GetUserById')
+  getUserById(data: { id: string }) {
+    return this.usersService.getUserById(data.id);
+  }
 }

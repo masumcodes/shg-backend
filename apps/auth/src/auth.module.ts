@@ -23,6 +23,7 @@ import { join } from 'path';
         rejectUnauthorized: false,
       },
     }),
+    TypeOrmModule.forFeature([User]),
     UsersModule.register(),
   ],
   controllers: [UsersController],

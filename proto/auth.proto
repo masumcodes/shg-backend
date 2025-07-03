@@ -10,20 +10,20 @@ service AuthService {
 message AddMemberRequest {
   string presidentId = 1;
   string name = 2;
-  string phoneNumber = 3;
-  string role = 4; // president, secretary, treasurer, member
+  int64 phoneNumber = 3;
+  string designation = 4; // president, secretary, treasurer, member
 }
 
 message LoginRequest {
-  string phoneNumber = 1;
+  string id = 1;
   string password = 2;
 }
 
 message UserResponse {
   string id = 1;
   string name = 2;
-  string phoneNumber = 3;
-  string role = 4;
+  int64 phoneNumber = 3;
+  string designation = 4;
 }
 
 message LoginResponse {
