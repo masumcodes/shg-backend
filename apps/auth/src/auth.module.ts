@@ -5,9 +5,7 @@ import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
 import { ConfigModule } from '@nestjs/config';
-import { ClientsModule } from '@nestjs/microservices';
-import { Transport } from '@nestjs/microservices';
-import { join } from 'path';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -25,8 +23,10 @@ import { join } from 'path';
     }),
     TypeOrmModule.forFeature([User]),
     UsersModule.register(),
+    JwtModule.register({}),
   ],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class AuthModule {}

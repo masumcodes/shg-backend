@@ -5,33 +5,51 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { CreateMemberDto } from './dto/creatre.member.dto';
+import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
+import { UnauthorizedException } from '@nestjs/common/exceptions/unauthorized.exception';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepo: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
-  async login(data: { id: string; password: string }) {
+  async login(loginDto: LoginDto) {
     const user = await this.userRepo.findOne({
-      where: { id: data.id },
+      where: { id: loginDto.id },
     });
-    if (!user) {
-      throw new Error('User not found');
+
+    if (
+      !user ||
+      !(await this.verifyPassword(loginDto.password, user.password))
+    ) {
+      throw new UnauthorizedException(
+        'Invalid credentials or account not exists',
+      );
     }
 
-    const isMatch = await bcrypt.compare(data.password, user.password);
-    if (!isMatch) {
-      throw new Error('Invalid credentials');
+    const token = this.generateTokens(user);
+    const { password, ...result } = user;
+  }
+  async refreshToken(refreshToken: string) {
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: 'refresh_secret',
+      });
+      const user = await this.userRepo.findOne({
+        where: { id: payload.sub },
+      });
+      if (!user) {
+        throw new UnauthorizedException('Invalid token');
+      }
+      const acessToken = this.generateAccessToken(user);
+      return { acessToken };
+    } catch (e) {
+      throw new UnauthorizedException('Invalid token');
     }
-
-    const token = jwt.sign(
-      { userId: user.id, designation: user.designation },
-      process.env.JWT_SECRET || 'jwtsecret',
-    );
-
-    return { token, userId: user.id };
   }
 
   async addMember(data: CreateMemberDto) {
@@ -64,7 +82,7 @@ export class UsersService {
   async getUserById(id: string) {
     const user = await this.userRepo.findOne({ where: { id } });
     if (!user) {
-      throw new Error('User not found');
+      throw new UnauthorizedException('User not found');
     }
     return {
       id: user.id,
@@ -72,5 +90,33 @@ export class UsersService {
       phoneNumber: user.phoneNumber,
       designation: user.designation,
     };
+  }
+
+  private async verifyPassword(
+    plainPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return bcrypt.compare(plainPassword, hashedPassword);
+  }
+
+  private generateTokens(user: User) {
+    return {
+      acessToken: this.generateAccessToken(user),
+      refreshToken: this.generateRefreshToken(user),
+    };
+  }
+  private generateAccessToken(user: User): string {
+    const payload = {
+      userId: user.id,
+      designation: user.designation,
+    };
+    return jwt.sign(payload, process.env.JWT_SECRET, { expireIn: '15m' });
+  }
+  private generateRefreshToken(user: User): string {
+    const payload = {
+      userId: user.id,
+      designation: user.designation,
+    };
+    return jwt.sign(payload, process.env.REFRESH_SECRET, { expiresIn: '7d' });
   }
 }

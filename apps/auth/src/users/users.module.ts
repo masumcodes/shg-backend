@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({})
 export class UsersModule {
@@ -14,6 +15,7 @@ export class UsersModule {
       imports: [
         ConfigModule,
         TypeOrmModule.forFeature([User]),
+        JwtModule.register({}),
         ClientsModule.registerAsync([
           {
             name: 'USER_SERVICE',
