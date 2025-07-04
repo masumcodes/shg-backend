@@ -14,7 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: process.env.DATABASE_URL,
+      url: process.env.AUTH_DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
       ssl: {

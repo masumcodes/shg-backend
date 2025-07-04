@@ -12,6 +12,7 @@ async function bootstrap() {
       options: {
         protoPath: join(__dirname, '../../../proto/auth.proto'),
         package: AUTH,
+        url: `localhost:${process.env.AUTH_PORT ?? 3003}`,
       },
     },
   );
