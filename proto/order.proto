@@ -1,0 +1,99 @@
+    syntax="proto3";
+    package order;
+
+    service OrderService {
+        rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+        rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+        rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
+        rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse);
+        rpc DeleteOrder(DeleteOrderRequest) returns (DeleteOrderResponse);
+      }
+      enum OrderStatus {
+        ORDER_STATUS_UNSPECIFIED = 0;
+        ORDER_STATUS_PENDING = 1;
+        ORDER_STATUS_CONFIRMED = 2;
+        ORDER_STATUS_SHIPPED = 3;
+        ORDER_STATUS_DELIVERED = 4;
+        ORDER_STATUS_CANCELLED = 5;
+      }
+      
+      message PaginationDto {
+        int32 page = 1;
+        int32 skip = 2;
+      }
+      
+      message Order {
+        string id = 1;
+        string productId = 2;
+        string memberId = 3;
+        string memberName = 4;
+        int32 quantity = 5;
+        OrderStatus status = 6;
+        string createdAt = 7;
+        string updatedAt = 8;
+        // Address fields
+        string state = 9;
+        string city = 10;
+        string district = 11;
+        string village = 12;
+        string pincode = 13;
+        // string shg_id = 14;
+      }
+      
+      // Create Order
+      message CreateOrderRequest {
+        string productId = 1;
+        string memberId = 2;
+        int32 quantity = 3;
+        // Address fields
+        string city = 4;
+        string state = 5;
+        string district = 6;
+        string village = 7;
+        string pincode = 8;
+      }
+      
+      message CreateOrderResponse {
+        Order order = 1;
+      }
+      
+      // Get Order
+      message GetOrderRequest {
+        string id = 1;
+      }
+      
+      message GetOrderResponse {
+        Order order = 1;
+      }
+      
+      // List Orders
+      message ListOrdersRequest {
+        string memberId = 1;
+       
+        // string shg_id = 3;
+      }
+      
+      message ListOrdersResponse {
+        repeated Order orders = 1;
+      }
+      
+      // Update Order
+      message UpdateOrderRequest {
+        string id = 1;
+        OrderStatus status = 2;
+      }
+      
+      message UpdateOrderResponse {
+        Order order = 1;
+      }
+      
+      // Delete Order
+      message DeleteOrderRequest {
+        string shgId = 1;
+        string id = 1;
+      }
+      
+      message DeleteOrderResponse {
+        bool success = 1;
+      }
+      

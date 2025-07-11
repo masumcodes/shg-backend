@@ -5,10 +5,10 @@
 // source: product.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
-export const protobufPackage = "product";
+export const protobufPackage = 'product';
 
 export interface Product {
   id: string;
@@ -64,55 +64,85 @@ export interface DeleteProductResponse {
   success: boolean;
 }
 
-export const PRODUCT_PACKAGE_NAME = "product";
+export const PRODUCT_PACKAGE_NAME = 'product';
 
 export interface ProductServiceClient {
   createProduct(request: CreateProductRequest): Observable<Product>;
 
-  getAllProducts(request: GetAllProductsRequest): Observable<GetAllProductsResponse>;
+  getAllProducts(
+    request: GetAllProductsRequest,
+  ): Observable<GetAllProductsResponse>;
 
   getProductById(request: GetProductByIdRequest): Observable<Product>;
 
   updateProduct(request: UpdateProductRequest): Observable<Product>;
 
-  deleteProduct(request: DeleteProductRequest): Observable<DeleteProductResponse>;
+  deleteProduct(
+    request: DeleteProductRequest,
+  ): Observable<DeleteProductResponse>;
 }
 
 export interface ProductServiceController {
-  createProduct(request: CreateProductRequest): Promise<Product> | Observable<Product> | Product;
+  createProduct(
+    request: CreateProductRequest,
+  ): Promise<Product> | Observable<Product> | Product;
 
   getAllProducts(
     request: GetAllProductsRequest,
-  ): Promise<GetAllProductsResponse> | Observable<GetAllProductsResponse> | GetAllProductsResponse;
+  ):
+    | Promise<GetAllProductsResponse>
+    | Observable<GetAllProductsResponse>
+    | GetAllProductsResponse;
 
-  getProductById(request: GetProductByIdRequest): Promise<Product> | Observable<Product> | Product;
+  getProductById(
+    request: GetProductByIdRequest,
+  ): Promise<Product> | Observable<Product> | Product;
 
-  updateProduct(request: UpdateProductRequest): Promise<Product> | Observable<Product> | Product;
+  updateProduct(
+    request: UpdateProductRequest,
+  ): Promise<Product> | Observable<Product> | Product;
 
   deleteProduct(
     request: DeleteProductRequest,
-  ): Promise<DeleteProductResponse> | Observable<DeleteProductResponse> | DeleteProductResponse;
+  ):
+    | Promise<DeleteProductResponse>
+    | Observable<DeleteProductResponse>
+    | DeleteProductResponse;
 }
 
 export function ProductServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
-      "createProduct",
-      "getAllProducts",
-      "getProductById",
-      "updateProduct",
-      "deleteProduct",
+      'createProduct',
+      'getAllProducts',
+      'getProductById',
+      'updateProduct',
+      'deleteProduct',
     ];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("ProductService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('ProductService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("ProductService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('ProductService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const PRODUCT_SERVICE_NAME = "ProductService";
+export const PRODUCT_SERVICE_NAME = 'ProductService';
